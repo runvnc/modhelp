@@ -1,0 +1,22 @@
+{
+  "name": "modhelp",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "modhelp": "./index.js"
+  },
+  "dependencies": {
+    "marked": "^0.3.2",
+    "marked-terminal": "^1.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:runvnc/modhelp"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jason Livesay",
+  "license": "ISC"
+}
