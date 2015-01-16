@@ -1,11 +1,12 @@
 {
   "name": "modhelp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "bin": {
     "modhelp": "./index.js"
   },
   "dependencies": {
+    "glob": "^4.3.5",
     "marked": "^0.3.2",
     "marked-terminal": "^1.1.2"
   },
