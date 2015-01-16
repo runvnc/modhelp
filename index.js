@@ -8,8 +8,8 @@ marked.setOptions({
   renderer: new TerminalRenderer() 
 }); 
 
-//var mod = process.argv[2];
-mod='chalk';
+var mod = process.argv[2];
+
 glob('node_modules/'+mod+'/*.md', null, function(er, files) {
   if (files && files.length && files.length>0) {
     var readme = fs.readFileSync(files[0], 'utf8');
