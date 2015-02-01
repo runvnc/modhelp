@@ -16,9 +16,10 @@ var line = 0;
 
 var rows = term.height - 1;
 var pageNum = 1;
+var lastShown = 0;
 
 function statusLine() {
-  term.dim.bgBlack.white("q: quit, n/p: next/prev pg, up/down: scroll 1 line" +
+  term.dim.bgBlack.white("q: quit, n/p/pgup/pgdown, up/down arrow: scroll" +
                          "  Line " + (line+1) + " of " + lines.length);
   term.column(1);               
 }
@@ -29,7 +30,9 @@ function showPage(startLine) {
   var i = startLine;
 
   function inner() {
-    console.log(lines[i]);
+    if (i < lines.length -1) {
+      console.log(lines[i]);
+    }
     if (i-startLine < (rows-3)) {
       i+=1;
       inner();
@@ -40,6 +43,7 @@ function showPage(startLine) {
           inner();
         } else {
           statusLine();
+          lastShown = i;
         }
       });
     }
@@ -48,7 +52,11 @@ function showPage(startLine) {
 }
 
 function showLine(line) {
-  console.log(lines[line]);
+  if (line < lines.length-1) {
+    term.moveTo(1, term.height);
+    term.eraseLine();
+    console.log(lines[line]);
+  }
 }
 
 glob('node_modules/'+mod+'/*.md', null, function(er, files) {
@@ -67,7 +75,12 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
           break;
         case 'DOWN':
           if (line < lines.length-1) line += 1;
-          showLine(line+rows);
+          if (lastShown < line+rows-1) {
+            lastShown += 1;
+            showLine(lastShown);
+          } else {
+            showLine(line+rows-1);
+          }
           break;
         case 'UP':
           if (line > 0) line -= 1;
@@ -75,14 +88,18 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
           break;
         case 'p':
         case 'PAGE_UP':
-          if (line > 0) line -= rows;
+          if (line > 0) line -= Math.round(rows/2);
           if (line < 0) line = 0;
           showPage(line); 
           break;
         case 'n':
         case 'PAGE_DOWN':
-          if (line < lines.length-1) line += rows;
+          if (line < lines.length-1) line += Math.round(rows/2);
           if (line > lines.length-1) line = lines.length-rows-1;
+          if (lastShown+1<line) {
+            lastShown +=1;
+            line = lastShown;
+          }
           showPage(line);
           break;
       }
