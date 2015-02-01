@@ -15,9 +15,7 @@
     "type": "git",
     "url": "git@github.com:runvnc/modhelp"
   },
-  "keywords": {
-    ["module", "help", "markdown", "readme", "terminal", "usage"]
-  },
+  "keywords": ["module", "help", "markdown", "readme", "terminal", "usage"],
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

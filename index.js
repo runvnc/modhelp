@@ -53,20 +53,20 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
           break;
         case 'DOWN':
           if (line < lines.length-1) line += 1;
-          showLine(line);
+          showLine(line+rows);
           break;
         case 'UP':
           if (line > 0) line -= 1;
           showPage(line);
           break;
         case 'p':
-        case 'PG_UP':
+        case 'PAGE_UP':
           if (line > 0) line -= rows;
           if (line < 0) line = 0;
           showPage(line); 
           break;
         case 'n':
-        case 'PG_DOWN':
+        case 'PAGE_DOWN':
           if (line < lines.length-1) line += rows;
           if (line > lines.length-1) line = lines.length-rows-1;
           showPage(line);
