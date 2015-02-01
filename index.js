@@ -14,27 +14,41 @@ var mod = process.argv[2];
 var lines = [];
 var line = 0;
 
-var rows = term.height - 2;
+var rows = term.height - 1;
 var pageNum = 1;
 
 function statusLine() {
-  console.log("q: quit, n/p: next/prev pg, up/down: scroll 1 line" +
-              "  Line " + line + " of " + lines.lengh);
-               
+  term.dim.bgBlack.white("q: quit, n/p: next/prev pg, up/down: scroll 1 line" +
+                         "  Line " + (line+1) + " of " + lines.length);
+  term.column(1);               
 }
 
 function showPage(startLine) {
   term.clear();
   var endLine = startLine + rows;
-  for (var i=startLine; i < endLine 
-       && i<lines.length; i++) {
+  var i = startLine;
+
+  function inner() {
     console.log(lines[i]);
+    if (i-startLine < (rows-3)) {
+      i+=1;
+      inner();
+    } else {
+      term.getCursorLocation(function(err, x, y) {
+        if (y < rows-1 && i < endLine && i<lines.length-1) {
+          i += 1;
+          inner();
+        } else {
+          statusLine();
+        }
+      });
+    }
   }
-  statusLine();
+  inner();
 }
 
 function showLine(line) {
-  console.log(lines[line]); 
+  console.log(lines[line]);
 }
 
 glob('node_modules/'+mod+'/*.md', null, function(er, files) {
