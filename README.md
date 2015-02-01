@@ -2,6 +2,8 @@
 
 Uses `marked-terminal` to render a README.md from an installed module (in ./node_modules) in the terminal.
 
+Now with built-in pager!  Page up/down, arrow keys to scroll line-by-line, q to quit.
+
 ## Install
 
 ```sh
@@ -13,8 +15,3 @@ npm install -g modhelp
 ```sh
 modhelp themodule
 ```
-
-## Paging
-
-`tmux` is one convenient way to handle paging through the output (Ctrl-B PgUp).  
-`| less -r` sort of works but usually not very well.

@@ -49,7 +49,7 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
       switch (name) {
         case 'q':
           term.grabInput(false);
-          processs.exit(0);
+          process.exit(0);
           break;
         case 'DOWN':
           if (line < lines.length-1) line += 1;
@@ -59,12 +59,14 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
           if (line > 0) line -= 1;
           showPage(line);
           break;
-        case 'p', 'PG_UP':
+        case 'p':
+        case 'PG_UP':
           if (line > 0) line -= rows;
           if (line < 0) line = 0;
           showPage(line); 
           break;
-        case 'n', 'PG_DOWN':
+        case 'n':
+        case 'PG_DOWN':
           if (line < lines.length-1) line += rows;
           if (line > lines.length-1) line = lines.length-rows-1;
           showPage(line);
@@ -73,6 +75,8 @@ glob('node_modules/'+mod+'/*.md', null, function(er, files) {
     });
     if (lines.length < rows) {
       console.log(rendered);
+      term.grabInput(false);
+      process.exit();
     } else {
       showPage(0);
     }
