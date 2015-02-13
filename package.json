@@ -1,6 +1,6 @@
 {
   "name": "modhelp",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Show ANSI-colored module READMEs in terminal.",
   "bin": {
     "modhelp": "./index.js"

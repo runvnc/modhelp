@@ -67,7 +67,13 @@ var markdown = 'node_modules/'+mod+'/*.markdown';
 function doglob() {
   glob([md, markdown], null, function(er, files) {
     if (files && files.length && files.length>0) {
-      var readme = fs.readFileSync(files[0], 'utf8');
+      var thefile = files[0];
+      files.forEach(function(fname,i) {
+        if (fname.toLowerCase().indexOf('readme') >=0) {
+          thefile = files[i];
+        }
+      });
+      var readme = fs.readFileSync(thefile, 'utf8');
       var rendered = marked(readme);
       lines = rendered.split('\n');
 
