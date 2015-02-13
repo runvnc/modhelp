@@ -1,12 +1,12 @@
 {
   "name": "modhelp",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Show ANSI-colored module READMEs in terminal.",
   "bin": {
     "modhelp": "./index.js"
   },
   "dependencies": {
-    "glob": "^4.3.5",
+    "multi-glob": "",
     "marked": "^0.3.2",
     "marked-terminal": "^1.1.2",
     "terminal-kit": "^0.9.8"
