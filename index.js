@@ -39,7 +39,12 @@ function search(text) {
  if (found) {
    line = l;
    showPage(l);
- } 
+ } else {
+   term.moveTo(1,term.height);
+   term.eraseLine();
+   term.dim.bgBlack.white('No matches');
+   setTimeout(statusLine, 1000);  
+ }
 }
 
 function showPage(startLine) {
@@ -75,6 +80,7 @@ function showLine(line) {
     term.eraseLine();
     console.log(lines[line]);
   }
+  statusLine();
 }
 
 var tries = 0;
@@ -103,8 +109,14 @@ function load(readme) {
         }
         break;
       case 'UP':
-        if (line > 0) line -= 1;
-        showPage(line);
+        if (line > 0) {
+          line -= 1;
+          term.moveTo(1,1);
+          term.insertLine(1);
+          term.moveTo(1,1);
+          console.log(lines[line]);
+          statusLine();
+        }
         break;
       case 'p':
       case 'PAGE_UP':
