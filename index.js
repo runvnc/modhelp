@@ -20,31 +20,36 @@ var rows = term.height - 1;
 var pageNum = 1;
 var lastShown = 0;
 
-function statusLine() {
+var nextStatus = '';
+
+function statusLine(str) {
   term.moveTo(1,term.height);
-  term.dim.bgBlack.white("q: quit, n/p/pgup/pgdown, up/down arrow: scroll, /: search" +
-      "  Line " + (line+1) + " of " + lines.length);
+  if (!str) str = "q: quit, n/p/pgup/pgdown, up/down arrow: scroll, /: search" +
+      "  Line " + (line+1) + " of " + lines.length;
+  term.eraseLine();
+  term.dim.bgBlack.white(str);
   term.column(1);               
 }
 
 var searched = '';
 function search(text) {
   searched = text;
-  var found = false;
-  var l = line;
-  do {
-    l++;
-    found = l<lines.length &&lines[l].indexOf(text)>=0;
-  } while (!found && l < lines.length);
- if (found) {
-   line = l;
-   showPage(l);
- } else {
-   term.moveTo(1,term.height);
-   term.eraseLine();
-   term.dim.bgBlack.white('No matches');
-   setTimeout(statusLine, 1000);  
- }
+  statusLine('Searching for "'+text+'"');
+  setTimeout(function() {
+    var found = false;
+    var l = line;
+    do {
+      l++;
+      found = l<lines.length &&lines[l].indexOf(text)>=0;
+    } while (!found && l < lines.length);
+   if (found) {
+     line = l;
+     nextStatus = 'Found ' + text;
+     showPage(l);
+   } else {
+     statusLine('Not found.');
+   }
+ }, 1);
 }
 
 function showPage(startLine) {
@@ -65,7 +70,8 @@ function showPage(startLine) {
           i += 1;
           inner();
         } else {
-          statusLine();
+          statusLine(nextStatus);
+          if (nextStatus) nextStatus = '';
           lastShown = i;
         }
       });
