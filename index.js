@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var marked = require('marked'),
     fs = require('fs'),
+    request = require('request'),
     childproc = require('child_process'),
     glob = require('multi-glob').glob,
     term = require('terminal-kit').terminal,
@@ -20,9 +21,25 @@ var pageNum = 1;
 var lastShown = 0;
 
 function statusLine() {
-  term.dim.bgBlack.white("q: quit, n/p/pgup/pgdown, up/down arrow: scroll" +
-                         "  Line " + (line+1) + " of " + lines.length);
+  term.moveTo(1,term.height);
+  term.dim.bgBlack.white("q: quit, n/p/pgup/pgdown, up/down arrow: scroll, /: search" +
+      "  Line " + (line+1) + " of " + lines.length);
   term.column(1);               
+}
+
+var searched = '';
+function search(text) {
+  searched = text;
+  var found = false;
+  var l = line;
+  do {
+    l++;
+    found = l<lines.length &&lines[l].indexOf(text)>=0;
+  } while (!found && l < lines.length);
+ if (found) {
+   line = l;
+   showPage(l);
+ } 
 }
 
 function showPage(startLine) {
@@ -61,78 +78,76 @@ function showLine(line) {
 }
 
 var tries = 0;
-var md = 'node_modules/'+mod+'/*.md';
-var markdown = 'node_modules/'+mod+'/*.markdown';
+var inp = true;
 
-function doglob() {
-  glob([md, markdown], null, function(er, files) {
-    if (files && files.length && files.length>0) {
-      var thefile = files[0];
-      files.forEach(function(fname,i) {
-        if (fname.toLowerCase().indexOf('readme') >=0) {
-          thefile = files[i];
-        }
-      });
-      var readme = fs.readFileSync(thefile, 'utf8');
-      var rendered = marked(readme);
-      lines = rendered.split('\n');
+function load(readme) {
+  var rendered = marked(readme);
+  lines = rendered.split('\n');
 
-      term.grabInput({mouse:'button'});
-      
-      term.on('key', function(name, matches, data) {
-        switch (name) {
-          case 'q':
-            term.grabInput(false);
-            process.exit(0);
-            break;
-          case 'DOWN':
-            if (line < lines.length-1) line += 1;
-            if (lastShown < line+rows-1) {
-              lastShown += 1;
-              showLine(lastShown);
-            } else {
-              showLine(line+rows-1);
-            }
-            break;
-          case 'UP':
-            if (line > 0) line -= 1;
-            showPage(line);
-            break;
-          case 'p':
-          case 'PAGE_UP':
-            if (line > 0) line -= Math.round(rows/2);
-            if (line < 0) line = 0;
-            showPage(line); 
-            break;
-          case 'n':
-          case 'PAGE_DOWN':
-            if (line < lines.length-1) line += Math.round(rows/2);
-            if (line > lines.length-1) line = lines.length-rows-1;
-            if (lastShown+1<line) {
-              lastShown +=1;
-              line = lastShown;
-            }
-            showPage(line);
-            break;
-        }
-      });
-      if (lines.length < rows) {
-        console.log(rendered);
+  term.grabInput(true);
+
+  term.on('key', function(name, matches, data) {
+    if (!inp) return false;
+    switch (name) {
+      case 'q':
         term.grabInput(false);
-        process.exit();
-      } else {
-        showPage(0);
-      }
-    } else {
-      if (tries < 1) {
-        tries++;
-        childproc.exec('npm install '+mod, function(er, ou, e) {
-          doglob();
-        });
-      }
+        process.exit(0);
+        break;
+      case 'DOWN':
+        if (line < lines.length-1) line += 1;
+        if (lastShown < line+rows-1) {
+          lastShown += 1;
+          showLine(lastShown);
+        } else {
+          showLine(line+rows-1);
+        }
+        break;
+      case 'UP':
+        if (line > 0) line -= 1;
+        showPage(line);
+        break;
+      case 'p':
+      case 'PAGE_UP':
+        if (line > 0) line -= Math.round(rows/2);
+        if (line < 0) line = 0;
+        showPage(line); 
+        break;
+      case 'n':
+      case 'PAGE_DOWN':
+        if (line < lines.length-1) line += Math.round(rows/2);
+        if (line > lines.length-1) line = lines.length-rows-1;
+        if (lastShown+1<line) {
+          lastShown +=1;
+          line = lastShown;
+        }
+        showPage(line);
+        break;
+      case '/':
+        //term.grabInput(false);
+        inp = false;
+        term.moveTo(1,term.height);
+        term.eraseLine();
+        term.dim.bgBlack.white("Enter search text (or enter to repeat last): "); 
+        term.inputField({echo:true},function(er,text) {
+          if (!text || text.length==0) text = searched;
+          inp = true;
+          term.grabInput(true);
+          search(text);
+        });        
+        break;
     }
   });
+  if (lines.length < rows) {
+    console.log(rendered);
+    term.grabInput(false);
+    process.exit();
+  } else {
+    showPage(0);
+  }
 }
 
-doglob();
+request('http://registry.npmjs.com/'+mod, function(e,r,pkg) {
+  pkg = JSON.parse(pkg);
+  load(pkg.readme);
+});
 
