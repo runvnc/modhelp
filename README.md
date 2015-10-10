@@ -17,3 +17,5 @@ npm install -g modhelp
 ```sh
 modhelp themodule
 ```
+
+[Tiny Villages: Horizontally Scaling Society](http://runvnc.github.io/tinyvillage)
