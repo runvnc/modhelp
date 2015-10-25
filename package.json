@@ -6,9 +6,10 @@
     "modhelp": "./index.js"
   },
   "dependencies": {
-    "multi-glob": "",
     "marked": "^0.3.2",
     "marked-terminal": "^1.1.2",
+    "multi-glob": "",
+    "request": "^2.65.0",
     "terminal-kit": "^0.9.8"
   },
   "repository": {
