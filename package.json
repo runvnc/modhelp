@@ -9,8 +9,6 @@
     "http-get-shim": "^0.1.1",
     "marked": "^0.3.2",
     "marked-terminal": "^1.1.2",
-    "request": "^2.65.0",
-    "request-lite": "^2.40.1",
     "terminal-kit": "^0.9.8"
   },
   "repository": {
