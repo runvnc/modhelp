@@ -1,15 +1,24 @@
 #!/usr/bin/env node
-var marked = require('marked'),
-    fs = require('fs'),
-    request = require('request'),
-    childproc = require('child_process'),
-    glob = require('multi-glob').glob,
-    term = require('terminal-kit').terminal,
-    TerminalRenderer = require('marked-terminal');
+function dt() { process.stdout.write('.'); }
+
+dt();
+
+get = require('http-get-shim');
+dt();
+
+var marked = require('marked');
+dt();
+
+term = require('terminal-kit').terminal;
+dt();
+
+TerminalRenderer = require('marked-terminal');
+dt();
 
 marked.setOptions({ 
   renderer: new TerminalRenderer() 
 }); 
+dt();
 
 var mod = process.argv[2];
 
@@ -93,8 +102,11 @@ var tries = 0;
 var inp = true;
 
 function load(readme) {
+  dt();
   var rendered = marked(readme);
   lines = rendered.split('\n');
+  dt();
+  console.log();
 
   term.grabInput(true);
 
@@ -164,7 +176,7 @@ function load(readme) {
   }
 }
 
-request('http://registry.npmjs.com/'+mod, function(e,r,pkg) {
+get('http://registry.npmjs.com/'+mod, function(e,r,pkg) {
   pkg = JSON.parse(pkg);
   load(pkg.readme);
 });
