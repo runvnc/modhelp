@@ -33,7 +33,7 @@ var nextStatus = '';
 
 function statusLine(str) {
   term.moveTo(1,term.height);
-  if (!str) str = "q: quit, n/p/pgup/pgdown, up/down arrow: scroll, /: search" +
+  if (!str) str = "q: quit, n/p/pgup/pgdown, up/down arrow|j/k: scroll, /: search" +
       "  Line " + (line+1) + " of " + lines.length;
   term.eraseLine();
   term.dim.bgBlack.white(str);
