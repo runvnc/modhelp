@@ -117,6 +117,7 @@ function load(readme) {
         term.grabInput(false);
         process.exit(0);
         break;
+      case 'j':
       case 'DOWN':
         if (line < lines.length-1) line += 1;
         if (lastShown < line+rows-1) {
@@ -126,6 +127,7 @@ function load(readme) {
           showLine(line+rows-1);
         }
         break;
+      case 'k':
       case 'UP':
         if (line > 0) {
           line -= 1;
