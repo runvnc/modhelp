@@ -16,10 +16,17 @@
     "url": "git@github.com:runvnc/modhelp"
   },
   "keywords": [
+    "readme",
+    "manpm",
+    "man-n",
+    "man",
+    "npm",
+    "cli",
+    "utility",
     "module",
     "help",
     "markdown",
-    "readme",
+    "npm-man",
     "terminal",
     "usage"
   ],
